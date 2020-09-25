@@ -1211,7 +1211,7 @@ select
     row_count_diff.difference as row_count_difference,
     diff_count.num_missing as num_mismatched
 from row_count_diff
-join diff_count using (id)
+join diff_count on row_count_diff.id = diff_count.id
 '''.strip()
 
 
