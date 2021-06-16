@@ -1,9 +1,9 @@
-{% macro test_body(main_sql, fail_calc, warn_if, error_if, limit) -%}
-  {{ adapter.dispatch('test_body')(main_sql, fail_calc, warn_if, error_if, limit) }}
+{% macro get_test_sql(main_sql, fail_calc, warn_if, error_if, limit) -%}
+  {{ adapter.dispatch('get_test_sql')(main_sql, fail_calc, warn_if, error_if, limit) }}
 {%- endmacro %}
 
 
-{% macro default__test_body(main_sql, fail_calc, warn_if, error_if, limit) -%}
+{% macro default__get_test_sql(main_sql, fail_calc, warn_if, error_if, limit) -%}
     select
       {{ fail_calc }} as failures,
       {{ fail_calc }} {{ warn_if }} as should_warn,
@@ -55,7 +55,7 @@
 
   {% call statement('main', fetch_result=True) -%}
 
-    {{ test_body(main_sql, fail_calc, warn_if, error_if, limit)}}
+    {{ get_test_sql(main_sql, fail_calc, warn_if, error_if, limit)}}
 
   {%- endcall %}
   
