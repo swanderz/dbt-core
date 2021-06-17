@@ -12,6 +12,13 @@ Contributors:
 
 ## dbt 0.20.0 (Release TBD)
 
+### Under the hood
+
+- enable adapter maintainers to shim the core SQL statement of the new test materializaiton without having to override the entire materialization [#3461](https://github.com/fishtown-analytics/dbt/pull/3461)
+
+Contributors:
+- [@swanderz](https://github.com/swanderz) ([#3461](https://github.com/fishtown-analytics/dbt/pull/3461))
+
 ## dbt 0.20.0rc1 (June 04, 2021)
 
 
