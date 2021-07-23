@@ -60,6 +60,14 @@
 {% endmacro %}
 
 
+{% macro get_binding_char() -%}
+  {{ adapter.dispatch('get_binding_char')() }}
+{%- endmacro %}
+
+{% macro default__get_binding_char() %}
+  {{ return('%s') }}
+{% endmacro %}
+
 {% macro basic_load_csv_rows(model, batch_size, agate_table) %}
     {% set cols_sql = get_seed_column_quoted_csv(model, agate_table.column_names) %}
     {% set bindings = [] %}
@@ -77,13 +85,13 @@
             insert into {{ this.render() }} ({{ cols_sql }}) values
             {% for row in chunk -%}
                 ({%- for column in agate_table.column_names -%}
-                    %s
+                    {{ get_binding_char() }}
                     {%- if not loop.last%},{%- endif %}
                 {%- endfor -%})
                 {%- if not loop.last%},{%- endif %}
             {%- endfor %}
         {% endset %}
-
+        {{ log(var, info=True) }}
         {% do adapter.add_query(sql, bindings=bindings, abridge_sql_log=True) %}
 
         {% if loop.index0 == 0 %}
@@ -103,6 +111,22 @@
 
 {% materialization seed, default %}
 
+  {#
+    what this does is:
+    - read in a csv as an agate table
+    - generate an INSERT INTO VALUES statement
+    - (optionally) drop the existing
+    - execute the statement
+   
+    full-refresh option:
+      - when set to true, drop the table and recreate it
+      - this is useful when the schema of the csv has changed
+  #}
+
+  {# normally the relation name is the name of the .sql or .csv file  #}
+  {# however, sometimes you want it to be different  #}
+  {# enter the ALIAS which lets you have the relations have  #}
+  {# a different name in the db than their file name  #}
   {%- set identifier = model['alias'] -%}
   {%- set full_refresh_mode = (should_full_refresh()) -%}
 
@@ -111,6 +135,7 @@
   {%- set exists_as_table = (old_relation is not none and old_relation.is_table) -%}
   {%- set exists_as_view = (old_relation is not none and old_relation.is_view) -%}
 
+  {# you can do lots of fun things with this agate table #}
   {%- set agate_table = load_agate_table() -%}
   {%- do store_result('agate_table', response='OK', agate_table=agate_table) -%}
 
@@ -132,6 +157,7 @@
   {% set code = 'CREATE' if full_refresh_mode else 'INSERT' %}
   {% set rows_affected = (agate_table.rows | length) %}
   {% set sql = load_csv_rows(model, agate_table) %}
+
 
   {% call noop_statement('main', code ~ ' ' ~ rows_affected, code, rows_affected) %}
     {{ create_table_sql }};
