@@ -11,6 +11,10 @@
   {{ adapter.dispatch('load_csv_rows')(model, agate_table) }}
 {%- endmacro %}
 
+{% macro get_binding_char() -%}
+  {{ adapter.dispatch('get_binding_char')() }}
+{%- endmacro %}
+
 {% macro default__create_csv_table(model, agate_table) %}
   {%- set column_override = model['config'].get('column_types', {}) -%}
   {%- set quote_seed_column = model['config'].get('quote_columns', None) -%}
@@ -47,6 +51,9 @@
     {{ return(sql) }}
 {% endmacro %}
 
+{% macro default__get_binding_char() %}
+  {{ return('%s') }}
+{% endmacro %}
 
 {% macro get_seed_column_quoted_csv(model, column_names) %}
   {%- set quote_seed_column = model['config'].get('quote_columns', None) -%}
@@ -58,7 +65,6 @@
     {%- set dest_cols_csv = quoted | join(', ') -%}
     {{ return(dest_cols_csv) }}
 {% endmacro %}
-
 
 {% macro basic_load_csv_rows(model, batch_size, agate_table) %}
     {% set cols_sql = get_seed_column_quoted_csv(model, agate_table.column_names) %}
@@ -77,7 +83,7 @@
             insert into {{ this.render() }} ({{ cols_sql }}) values
             {% for row in chunk -%}
                 ({%- for column in agate_table.column_names -%}
-                    %s
+                    {{ get_binding_char() }}
                     {%- if not loop.last%},{%- endif %}
                 {%- endfor -%})
                 {%- if not loop.last%},{%- endif %}

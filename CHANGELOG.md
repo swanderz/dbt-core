@@ -36,6 +36,12 @@ Contributors:
 - Fix `store_failures` config when defined as a modifier for `unique` and `not_null` tests ([#3575](https://github.com/fishtown-analytics/dbt/issues/3575), [#3577](https://github.com/fishtown-analytics/dbt/pull/3577))
 - Fix `where` config with `relationships` test by refactoring test SQL. Note: The default `relationships` test now includes CTEs, and may need reimplementing on adapters that don't support CTEs nested inside subqueries. ([#3579](https://github.com/fishtown-analytics/dbt/issues/3579), [#3583](https://github.com/fishtown-analytics/dbt/pull/3583))
 
+### Under the hood
+- Allow the default seed macro's SQL parameter, `%s`, to be replaced by dispatching a new macro, `get_binding_char()`. This enables adapters with parameter marker characters such as `?` to not have to override `basic_load_csv_rows`.  ([#3622](https://github.com/fishtown-analytics/dbt/issues/3622), [#3623](https://github.com/fishtown-analytics/dbt/pull/3623))
+
+
+Contributors:
+- [@swanderz](https://github.com/swanderz) [#3623](https://github.com/fishtown-analytics/dbt/pull/3623)
 
 ## dbt 0.20.0 (July 12, 2021)
 
