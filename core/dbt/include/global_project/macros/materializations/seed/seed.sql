@@ -3,18 +3,6 @@
   {{ adapter.dispatch('create_csv_table')(model, agate_table) }}
 {%- endmacro %}
 
-{% macro reset_csv_table(model, full_refresh, old_relation, agate_table) -%}
-  {{ adapter.dispatch('reset_csv_table')(model, full_refresh, old_relation, agate_table) }}
-{%- endmacro %}
-
-{% macro load_csv_rows(model, agate_table) -%}
-  {{ adapter.dispatch('load_csv_rows')(model, agate_table) }}
-{%- endmacro %}
-
-{% macro get_binding_char() -%}
-  {{ adapter.dispatch('get_binding_char')() }}
-{%- endmacro %}
-
 {% macro default__create_csv_table(model, agate_table) %}
   {%- set column_override = model['config'].get('column_types', {}) -%}
   {%- set quote_seed_column = model['config'].get('quote_columns', None) -%}
@@ -37,6 +25,9 @@
   {{ return(sql) }}
 {% endmacro %}
 
+{% macro reset_csv_table(model, full_refresh, old_relation, agate_table) -%}
+  {{ adapter.dispatch('reset_csv_table')(model, full_refresh, old_relation, agate_table) }}
+{%- endmacro %}
 
 {% macro default__reset_csv_table(model, full_refresh, old_relation, agate_table) %}
     {% set sql = "" %}
@@ -50,6 +41,10 @@
 
     {{ return(sql) }}
 {% endmacro %}
+
+{% macro get_binding_char() -%}
+  {{ adapter.dispatch('get_binding_char')() }}
+{%- endmacro %}
 
 {% macro default__get_binding_char() %}
   {{ return('%s') }}
@@ -65,6 +60,10 @@
     {%- set dest_cols_csv = quoted | join(', ') -%}
     {{ return(dest_cols_csv) }}
 {% endmacro %}
+
+{% macro load_csv_rows(model, agate_table) -%}
+  {{ adapter.dispatch('load_csv_rows')(model, agate_table) }}
+{%- endmacro %}
 
 {% macro basic_load_csv_rows(model, batch_size, agate_table) %}
     {% set cols_sql = get_seed_column_quoted_csv(model, agate_table.column_names) %}
