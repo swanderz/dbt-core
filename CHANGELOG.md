@@ -18,6 +18,7 @@
 - Move the example project used by `dbt init` into `dbt` repository, to avoid cloning an external repo ([#3005](https://github.com/fishtown-analytics/dbt/pull/3005), [#3474](https://github.com/fishtown-analytics/dbt/pull/3474), [#3536](https://github.com/fishtown-analytics/dbt/pull/3536))
 - Better interaction between `dbt init` and adapters. Avoid raising errors while initializing a project ([#2814](https://github.com/fishtown-analytics/dbt/pull/2814), [#3483](https://github.com/fishtown-analytics/dbt/pull/3483))
 - Update `create_adapter_plugins` script to include latest accessories, and stay up to date with latest dbt-core version ([#3002](https://github.com/fishtown-analytics/dbt/issues/3002), [#3509](https://github.com/fishtown-analytics/dbt/pull/3509))
+- Allow the default seed macro's SQL parameter, `%s`, to be replaced by dispatching a new macro, `get_binding_char()`. This enables adapters with parameter marker characters such as `?` to not have to override `basic_load_csv_rows`.  ([#3622](https://github.com/fishtown-analytics/dbt/issues/3622), [#3623](https://github.com/fishtown-analytics/dbt/pull/3623))
 
 ### Dependencies
 - Require `werkzeug>=1`
@@ -28,20 +29,13 @@ Contributors:
 - [@tconbeer](https://github.com/tconbeer) [#3468](https://github.com/fishtown-analytics/dbt/pull/3468))
 - [@JLDLaughlin](https://github.com/JLDLaughlin) ([#3473](https://github.com/fishtown-analytics/dbt/pull/3473))
 - [@jmriego](https://github.com/jmriego) ([#3526](https://github.com/dbt-labs/dbt/pull/3526))
-
+- [@swanderz](https://github.com/swanderz) [#3623](https://github.com/fishtown-analytics/dbt/pull/3623)
 
 ## dbt 0.20.1 (Release TBD)
 
 ### Fixes
 - Fix `store_failures` config when defined as a modifier for `unique` and `not_null` tests ([#3575](https://github.com/fishtown-analytics/dbt/issues/3575), [#3577](https://github.com/fishtown-analytics/dbt/pull/3577))
 - Fix `where` config with `relationships` test by refactoring test SQL. Note: The default `relationships` test now includes CTEs, and may need reimplementing on adapters that don't support CTEs nested inside subqueries. ([#3579](https://github.com/fishtown-analytics/dbt/issues/3579), [#3583](https://github.com/fishtown-analytics/dbt/pull/3583))
-
-### Under the hood
-- Allow the default seed macro's SQL parameter, `%s`, to be replaced by dispatching a new macro, `get_binding_char()`. This enables adapters with parameter marker characters such as `?` to not have to override `basic_load_csv_rows`.  ([#3622](https://github.com/fishtown-analytics/dbt/issues/3622), [#3623](https://github.com/fishtown-analytics/dbt/pull/3623))
-
-
-Contributors:
-- [@swanderz](https://github.com/swanderz) [#3623](https://github.com/fishtown-analytics/dbt/pull/3623)
 
 ## dbt 0.20.0 (July 12, 2021)
 
