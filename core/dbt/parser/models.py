@@ -1,6 +1,7 @@
 from dbt.context.context_config import ContextConfig
 from dbt.contracts.graph.parsed import ParsedModelNode
 import dbt.flags as flags
+import dbt.tracking
 from dbt.node_types import NodeType
 from dbt.parser.base import SimpleSQLParser
 from dbt.parser.search import FileBlock
@@ -108,11 +109,12 @@ class ModelParser(SimpleSQLParser[ParsedModelNode]):
                 # no false positives or misses, we can expect the number model
                 # files parseable by the experimental parser to match our internal
                 # testing.
-                tracking.track_experimental_parser_sample({
-                    "project_id": self.root_project.hashed_name(),
-                    "file_id": utils.get_hash(node),
-                    "status": result
-                })
+                if dbt.tracking.active_user is not None:  # None in some tests
+                    tracking.track_experimental_parser_sample({
+                        "project_id": self.root_project.hashed_name(),
+                        "file_id": utils.get_hash(node),
+                        "status": result
+                    })
 
         # if the --use-experimental-parser flag was set, and the experimental parser succeeded
         elif not isinstance(experimentally_parsed, Exception):
@@ -124,17 +126,18 @@ class ModelParser(SimpleSQLParser[ParsedModelNode]):
             # this uses the updated config to set all the right things in the node.
             # if there are hooks present, it WILL render jinja. Will need to change
             # when the experimental parser supports hooks
-            self.update_parsed_node(node, config)
+            self.update_parsed_node_config(node, config)
 
             # update the unrendered config with values from the file.
             # values from yaml files are in there already
             node.unrendered_config.update(dict(experimentally_parsed['configs']))
 
-            # set refs, sources, and configs on the node object
+            # set refs and sources on the node object
             node.refs += experimentally_parsed['refs']
             node.sources += experimentally_parsed['sources']
-            for configv in experimentally_parsed['configs']:
-                node.config[configv[0]] = configv[1]
+
+            # configs don't need to be merged into the node
+            # setting them in config._config_call_dict is sufficient
 
             self.manifest._parsing_info.static_analysis_parsed_path_count += 1
 
