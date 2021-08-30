@@ -55,7 +55,7 @@
 {%- endmacro %}
 
 {% macro default__get_batch_size() %}
-  {{ return(var("batch_size", 10000)) }}
+  {{ return(10000) }}
 {% endmacro %}
 
 {% macro get_seed_column_quoted_csv(model, column_names) %}
