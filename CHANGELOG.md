@@ -9,10 +9,12 @@
 ### Under the hood
 
 - Use GitHub Actions for CI ([#3688](https://github.com/dbt-labs/dbt/issues/3688), [#3669](https://github.com/dbt-labs/dbt/pull/3669))
+- Allow the default seed macro's SQL parameter, `%s`, to be replaced by dispatching a new macro, `get_binding_char()`. This enables adapters with parameter marker characters such as `?` to not have to override `basic_load_csv_rows`.  ([#3622](https://github.com/fishtown-analytics/dbt/issues/3622), [#3623](https://github.com/fishtown-analytics/dbt/pull/3623))
 
 Contributors:
 
 - [@xemuliam](https://github.com/xemuliam) ([#3606](https://github.com/dbt-labs/dbt/pull/3606))
+- [@swanderz](https://github.com/swanderz) [#3623](https://github.com/fishtown-analytics/dbt/pull/3623)
 
 ## dbt 0.21.0b2 (August 19, 2021)
 
@@ -59,7 +61,6 @@ Contributors:
 - Better interaction between `dbt init` and adapters. Avoid raising errors while initializing a project ([#2814](https://github.com/dbt-labs/dbt/pull/2814), [#3483](https://github.com/dbt-labs/dbt/pull/3483))
 - Update `create_adapter_plugins` script to include latest accessories, and stay up to date with latest dbt-core version ([#3002](https://github.com/dbt-labs/dbt/issues/3002), [#3509](https://github.com/dbt-labs/dbt/pull/3509))
 - Scrub environment secrets from logs and console output ([#3617](https://github.com/dbt-labs/dbt/pull/3617))
-- Allow the default seed macro's SQL parameter, `%s`, to be replaced by dispatching a new macro, `get_binding_char()`. This enables adapters with parameter marker characters such as `?` to not have to override `basic_load_csv_rows`.  ([#3622](https://github.com/fishtown-analytics/dbt/issues/3622), [#3623](https://github.com/fishtown-analytics/dbt/pull/3623))
 
 ### Dependencies
 
@@ -72,7 +73,6 @@ Contributors:
 - [@tconbeer](https://github.com/tconbeer) [#3468](https://github.com/dbt-labs/dbt/pull/3468))
 - [@JLDLaughlin](https://github.com/JLDLaughlin) ([#3473](https://github.com/dbt-labs/dbt/pull/3473))
 - [@jmriego](https://github.com/jmriego) ([#3526](https://github.com/dbt-labs/dbt/pull/3526))
-- [@swanderz](https://github.com/swanderz) [#3623](https://github.com/fishtown-analytics/dbt/pull/3623)
 - [@danielefrigo](https://github.com/danielefrigo) ([#3547](https://github.com/dbt-labs/dbt/pull/3547))
 
 ## dbt 0.20.2 (Release TBD)
