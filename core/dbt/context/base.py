@@ -447,6 +447,31 @@ class BaseContext(metaclass=ContextMeta):
         else:
             logger.debug(msg)
         return ''
+    
+    @contextmember
+    @staticmethod
+    def log_var(var: str, sep = ': ', info: bool = False) -> str:
+        """Given a variable,
+        logs the variable name and value separated by sep
+
+        :param var: The variable to log
+        :param sep: how name and value are concatenated
+        :param info: If `False`, write to the log file. If `True`, write to
+            both the log file and stdout.
+
+        > macros/my_log_var_macro.sql
+
+            {% macro some_macro(arg1) %}
+              {{ log(arg1) }}
+            {% endmacro %}"
+        """
+        msg = f'{var=}' # py3.8+ only
+
+        if info:
+            logger.info(msg)
+        else:
+            logger.debug(msg)
+        return ''
 
     @contextproperty
     def run_started_at(self) -> Optional[datetime.datetime]:
