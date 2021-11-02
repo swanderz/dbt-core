@@ -668,6 +668,8 @@ class BaseAdapter(metaclass=AdapterMeta):
     def list_relations(
         self, database: Optional[str], schema: str
     ) -> List[BaseRelation]:
+
+        logger.info('adapter.list_relations: BEGIN')
         if self._schema_is_cached(database, schema):
             return self.cache.get_relations(database, schema)
 
@@ -678,6 +680,7 @@ class BaseAdapter(metaclass=AdapterMeta):
             quote_policy=self.config.quoting
         ).without_identifier()
 
+        logger.info(f"relation used to look up: {schema_relation}")
         # we can't build the relations cache because we don't have a
         # manifest so we can't run any operations.
         relations = self.list_relations_without_caching(
@@ -686,6 +689,7 @@ class BaseAdapter(metaclass=AdapterMeta):
 
         logger.debug('with database={}, schema={}, relations={}'
                      .format(database, schema, relations))
+        logger.info('adapter.list_relations: END')
         return relations
 
     def _make_match_kwargs(
@@ -717,19 +721,31 @@ class BaseAdapter(metaclass=AdapterMeta):
 
         matches = []
 
+        logger.info('adapter._make_match: BEGIN')
+
         search = self._make_match_kwargs(database, schema, identifier)
 
         for relation in relations_list:
             if relation.matches(**search):
                 matches.append(relation)
 
+        logger.info('adapter._make_match: END')
+        logger.info(f'{matches=}')
+        if matches > 1:
+            logger.info(f'found match!: {matches[0]}')
+        logger.info('adapter._make_match: END')
         return matches
 
     @available.parse_none
     def get_relation(
         self, database: str, schema: str, identifier: str
     ) -> Optional[BaseRelation]:
+
+        logger.info('adapter.get_relation: BEGIN')
+        logger.info('looking for existing relation with database={}, schema={}, '
+                    'identifier={}'.format(database, schema, identifier))
         relations_list = self.list_relations(database, schema)
+        logger.info(f'{relations_list=}')
 
         matches = self._make_match(relations_list, database, schema,
                                    identifier)
@@ -745,8 +761,9 @@ class BaseAdapter(metaclass=AdapterMeta):
             )
 
         elif matches:
+            logger.info('adapter.get_relation: END')
             return matches[0]
-
+        logger.info('adapter.get_relation: END')
         return None
 
     @available.deprecated('get_relation', lambda *a, **k: False)
