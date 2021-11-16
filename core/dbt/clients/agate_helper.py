@@ -46,7 +46,6 @@ def build_type_tester(
                               date_format='%Y-%m-%d'),
         agate.data_types.DateTime(null_values=('null', ''),
                                   datetime_format='%Y-%m-%d %H:%M:%S'),
-        ISODateTime(null_values=('null', '')),
         agate.data_types.Boolean(true_values=('true',),
                                  false_values=('false',),
                                  null_values=('null', '')),
