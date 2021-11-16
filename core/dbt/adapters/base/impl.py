@@ -23,7 +23,9 @@ from dbt.adapters.protocol import (
     AdapterConfig,
     ConnectionManagerProtocol,
 )
-from dbt.clients.agate_helper import empty_table, merge_tables, table_from_rows
+from dbt.clients.agate_helper import (
+    empty_table, merge_tables, table_from_rows, ISODateTime
+)
 from dbt.clients.jinja import MacroGenerator
 from dbt.contracts.graph.compiled import (
     CompileResultNode, CompiledSeedNode
@@ -925,6 +927,7 @@ class BaseAdapter(metaclass=AdapterMeta):
             (agate.Number, cls.convert_number_type),
             (agate.Boolean, cls.convert_boolean_type),
             (agate.DateTime, cls.convert_datetime_type),
+            (ISODateTime, cls.convert_datetime_type),
             (agate.Date, cls.convert_date_type),
             (agate.TimeDelta, cls.convert_time_type),
         ]
